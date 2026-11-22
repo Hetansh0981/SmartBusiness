@@ -1,0 +1,692 @@
+@import "tailwindcss";
+
+/* ===========================================================================
+   DUKAAN OS — DESIGN TOKENS
+   Single source of truth: ./DESIGN.md  ·  Never hardcode a value that exists here.
+   =========================================================================== */
+
+@theme {
+  /* --- Surface ladder (warm near-black) -------------------------------- */
+  --color-canvas: #0c0b09;
+  --color-elevated: #12110f;
+  --color-raised: #191713;
+  --color-overlay: #211e19;
+
+  /* --- Accents (strategic amber / burnt orange) ------------------------- */
+  --color-accent: #f59e0b;
+  --color-accent-strong: #f97316;
+  --color-cream: #fff4df;
+
+  /* --- Text ------------------------------------------------------------- */
+  --color-ink: #f5f1e8;
+  --color-ash: #a9a397;
+  --color-fog: #716d64;
+
+  /* --- Borders ---------------------------------------------------------- */
+  --color-hairline: rgba(255, 244, 223, 0.09);
+  --color-hairline-strong: rgba(255, 244, 223, 0.16);
+
+  /* --- Functional ------------------------------------------------------- */
+  --color-success: #4fa97a;
+  --color-warning: #f59e0b;
+  --color-danger: #e5644e;
+  --color-info: #a9a397;
+
+  /* --- Typography ------------------------------------------------------- */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace,
+    SFMono-Regular, Menlo, monospace;
+
+  /* --- Radius (restrained: 6 / 8 / 10 / 12) ----------------------------- */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 12px;
+  --radius-3xl: 12px;
+
+  /* --- Elevation (black + soft, never colored) -------------------------- */
+  --shadow-float: 0 16px 40px -12px rgba(0, 0, 0, 0.7);
+  --shadow-modal: 0 24px 64px -16px rgba(0, 0, 0, 0.8);
+  --shadow-lift: 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+
+  /* --- Motion ----------------------------------------------------------- */
+  --ease-spatial: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+
+    /* Atmospheric field — CSS fallback for the WebGL shader (DESIGN.md §8) */
+    --atmosphere: radial-gradient(
+        ellipse 80% 60% at 50% 0%,
+        rgba(245, 158, 11, 0.16),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 60% 50% at 85% 30%,
+        rgba(249, 115, 22, 0.1),
+        transparent 65%
+      );
+  }
+
+  * {
+    border-color: var(--color-hairline);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scrollbar-color: var(--color-overlay) var(--color-canvas);
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "calt" 1, "kern" 1, "liga" 1, "ss03" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: rgba(245, 158, 11, 0.28);
+    color: var(--color-cream);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: inherit;
+  }
+
+  /* Keyboard users always see focus; pointer users do not get a stray ring. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Hairline scrollbars — never chunky, never light. */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-overlay);
+    border: 3px solid transparent;
+    background-clip: content-box;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #35302a;
+    background-clip: content-box;
+  }
+
+  ::placeholder {
+    color: var(--color-fog);
+    opacity: 1;
+  }
+
+  /* Numbers are always tabular in this product. */
+  table,
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  [data-placeholder="true"] {
+    cursor: not-allowed;
+  }
+}
+
+@layer utilities {
+  /* -----------------------------------------------------------------------
+     Typography helpers
+     ----------------------------------------------------------------------- */
+  .font-display,
+  .font-editorial,
+  .font-serif-headline {
+    /* One family rule (DESIGN.md §3): display is made with scale + tracking. */
+    font-family: inherit;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+
+  .font-body,
+  .font-sans-ui {
+    font-family: var(--font-sans);
+  }
+
+  .font-mono-numbers {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Gradient text emphasis — permitted once per headline (DESIGN.md §2.4). */
+  .text-cream-gradient {
+    background: linear-gradient(180deg, #fff4df 0%, #f5c877 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* -----------------------------------------------------------------------
+     Surfaces
+     ----------------------------------------------------------------------- */
+  .surface-inset {
+    background-color: var(--color-raised);
+    border: 1px solid var(--color-hairline);
+  }
+
+  .surface-raised {
+    background-color: var(--color-overlay);
+    border: 1px solid var(--color-hairline-strong);
+  }
+
+  /* Soft atmospheric wash for hero / empty states (never behind dense UI). */
+  .atmosphere {
+    background-image: var(--atmosphere);
+  }
+
+  .atmosphere-subtle {
+    background-image: radial-gradient(
+        ellipse 70% 55% at 50% 0%,
+        rgba(245, 158, 11, 0.08),
+        transparent 72%
+      ),
+      radial-gradient(
+        ellipse 55% 45% at 88% 20%,
+        rgba(249, 115, 22, 0.05),
+        transparent 68%
+      );
+  }
+
+  /* Hairline grid used behind the marketing hero and editor welcome. */
+  .grid-hairline {
+    background-image: linear-gradient(
+        to right,
+        rgba(255, 244, 223, 0.045) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, rgba(255, 244, 223, 0.045) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 75% 65% at 50% 35%, #000 30%, transparent 78%);
+    -webkit-mask-image: radial-gradient(
+      ellipse 75% 65% at 50% 35%,
+      #000 30%,
+      transparent 78%
+    );
+  }
+
+  /* -----------------------------------------------------------------------
+     Focus helpers
+     ----------------------------------------------------------------------- */
+  .focus-ring {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+  .focus-ring:focus-visible {
+    outline-color: var(--color-accent);
+  }
+
+  /* -----------------------------------------------------------------------
+     Motion & Animation utilities (CSS-based, Framer Motion optional)
+     ----------------------------------------------------------------------- */
+  .perspective-800 {
+    perspective: 800px;
+  }
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .perspective-1500 {
+    perspective: 1500px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  /* 3D Card Hover Effects */
+  .card-3d-hover {
+    transition:
+      transform 0.4s var(--ease-spatial),
+      box-shadow 0.4s var(--ease-spatial),
+      border-color 0.3s ease;
+    transform: perspective(1000px) translateZ(0);
+    will-change: transform;
+  }
+  .card-3d-hover:hover {
+    transform: perspective(1000px) translateY(-6px) translateZ(12px) rotateX(1.5deg);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.55);
+    border-color: rgba(245, 158, 11, 0.4);
+  }
+
+  /* Sheen/Glow Sweep Effect */
+  .sheen-glow {
+    position: relative;
+    overflow: hidden;
+  }
+  .sheen-glow::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      60deg,
+      transparent 35%,
+      rgba(255, 255, 255, 0.08) 50%,
+      transparent 65%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
+    pointer-events: none;
+  }
+  .sheen-glow:hover::after {
+    transform: translateX(100%);
+  }
+
+  /* Animation Presets */
+  .anim-gentle-glide {
+    transition: all 0.5s var(--ease-spatial);
+  }
+  .anim-gentle-glide:hover {
+    transform: translateY(-4px);
+  }
+  .anim-3d-pop {
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: perspective(1000px) translateZ(0);
+  }
+  .anim-3d-pop:hover {
+    transform: perspective(1000px) translateY(-8px) scale(1.025) rotateX(2deg);
+  }
+  .anim-festive-shimmer {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+  .anim-festive-shimmer:hover {
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
+    transform: translateY(-4px);
+  }
+  .anim-dynamic-float {
+    animation: floatBob 6s ease-in-out infinite;
+  }
+
+  /* Scroll Reveal Animations (CSS-based, works without Framer Motion) */
+  .reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s var(--ease-spatial), transform 0.7s var(--ease-spatial);
+  }
+  .reveal-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Stagger children reveal */
+  .stagger-children > * {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .stagger-children.is-visible > * {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s var(--ease-spatial), transform 0.6s var(--ease-spatial);
+  }
+  .stagger-children.is-visible > *:nth-child(1) { transition-delay: 0ms; }
+  .stagger-children.is-visible > *:nth-child(2) { transition-delay: 80ms; }
+  .stagger-children.is-visible > *:nth-child(3) { transition-delay: 160ms; }
+  .stagger-children.is-visible > *:nth-child(4) { transition-delay: 240ms; }
+  .stagger-children.is-visible > *:nth-child(5) { transition-delay: 320ms; }
+  .stagger-children.is-visible > *:nth-child(6) { transition-delay: 400ms; }
+
+  /* Floating animation */
+  .animate-float-slow {
+    animation: floatBob 4s ease-in-out infinite;
+  }
+  .animate-float-bob {
+    animation: floatBob 5s ease-in-out infinite;
+  }
+
+  /* Pulse dot for live indicators */
+  .animate-pulse-dot {
+    animation: pulseDot 1.8s ease-in-out infinite;
+  }
+
+  /* Toast/slide animations */
+  .animate-toast-in {
+    animation: toastIn 0.24s var(--ease-spatial) both;
+  }
+  .animate-dialog-in {
+    animation: dialogIn 0.24s var(--ease-spatial) both;
+  }
+  .animate-drawer-right {
+    animation: drawerInRight 0.28s var(--ease-spatial) both;
+  }
+  .animate-drawer-left {
+    animation: drawerInLeft 0.28s var(--ease-spatial) both;
+  }
+  .animate-drawer-bottom {
+    animation: drawerInBottom 0.28s var(--ease-spatial) both;
+  }
+
+  /* 3D Receipt/Stamp animations */
+  .animate-receipt-3d {
+    animation: receiptSlide3D 0.6s var(--ease-spatial) forwards;
+  }
+  .animate-stamp-3d {
+    animation: stamp3D 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  /* Reveal up animation */
+  .animate-reveal-up {
+    animation: revealUp 0.42s var(--ease-spatial) both;
+  }
+  .animate-reveal-3d {
+    animation: revealUp 0.55s var(--ease-spatial) both;
+  }
+
+  /* Shimmer sweep for skeletons */
+  .animate-shimmer {
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 244, 223, 0.06) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmerSweep 1.6s linear infinite;
+  }
+
+  /* Scale press active state */
+  .active\:scale-\[0\.98\]:active,
+  .active\:scale-\[0\.97\]:active,
+  .active\:scale-\[0\.95\]:active {
+    transform: scale(0.98);
+  }
+
+  /* Group hover transforms */
+  .group:hover .group-hover\:translate-x-1 {
+    transform: translateX(0.25rem);
+  }
+  .group:hover .group-hover\:scale-105 {
+    transform: scale(1.05);
+  }
+  .group:hover .group-hover\:scale-110 {
+    transform: scale(1.10);
+  }
+  .group:hover .group-hover\:scale-125 {
+    transform: scale(1.25);
+  }
+}
+
+/* ===========================================================================
+   KEYFRAMES
+   =========================================================================== */
+
+@keyframes floatBob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(0.4deg);
+  }
+}
+
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes receiptSlide3D {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) translateY(-30px) rotateX(-20deg) scale(0.92);
+  }
+  70% {
+    opacity: 1;
+    transform: perspective(1000px) translateY(4px) rotateX(3deg) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) translateY(0) rotateX(0deg) scale(1);
+  }
+}
+
+@keyframes stamp3D {
+  0% {
+    opacity: 0;
+    transform: scale(2.2) rotate(-18deg) translateZ(40px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.92) rotate(-6deg) translateZ(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-8deg) translateZ(0);
+  }
+}
+
+@keyframes shimmerSweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.82);
+  }
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialogIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes drawerInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes drawerInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes drawerInBottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@layer utilities {
+  .animate-reveal-up {
+    animation: revealUp 0.42s var(--ease-spatial) both;
+  }
+  .animate-shimmer {
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 244, 223, 0.06) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmerSweep 1.6s linear infinite;
+  }
+  .animate-pulse-dot {
+    animation: pulseDot 1.8s ease-in-out infinite;
+  }
+  .animate-toast-in {
+    animation: toastIn 0.24s var(--ease-spatial) both;
+  }
+  .animate-overlay-in {
+    animation: overlayIn 0.2s ease-out both;
+  }
+  .animate-dialog-in {
+    animation: dialogIn 0.24s var(--ease-spatial) both;
+  }
+  .animate-drawer-right {
+    animation: drawerInRight 0.28s var(--ease-spatial) both;
+  }
+  .animate-drawer-left {
+    animation: drawerInLeft 0.28s var(--ease-spatial) both;
+  }
+  .animate-drawer-bottom {
+    animation: drawerInBottom 0.28s var(--ease-spatial) both;
+  }
+  .animate-spin-slow {
+    animation: spin 0.9s linear infinite;
+  }
+
+  /* Legacy names kept so existing storefront templates keep working. */
+  .animate-reveal-3d {
+    animation: revealUp 0.55s var(--ease-spatial) both;
+  }
+  .animate-float-bob {
+    animation: floatBob 5s ease-in-out infinite;
+  }
+  .animate-float-slow {
+    animation: floatBob 4s ease-in-out infinite;
+  }
+  .animate-receipt-3d {
+    animation: receiptSlide3D 0.6s var(--ease-spatial) forwards;
+  }
+  .animate-stamp-3d {
+    animation: stamp3D 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  .animate-amber-pulse {
+    animation: pulseDot 2.4s ease-in-out infinite;
+  }
+}
+
+/* ===========================================================================
+   REDUCED MOTION — everything collapses, shader renders one static frame.
+   =========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .animate-shimmer {
+    background-image: none;
+    background-color: rgba(255, 244, 223, 0.05);
+  }
+
+  .card-3d-hover:hover,
+  .anim-3d-pop:hover,
+  .anim-gentle-glide:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-hairline: rgba(255, 244, 223, 0.28);
+    --color-hairline-strong: rgba(255, 244, 223, 0.45);
+    --color-fog: #8d887e;
+  }
+}
+
+/* Touch targets: bump control height on coarse pointers (DESIGN.md §10). */
+@media (pointer: coarse) {
+  button,
+  a,
+  [role="button"],
+  [role="tab"],
+  [role="menuitem"] {
+    min-height: 40px;
+  }
+}
