@@ -8,10 +8,11 @@ interface AmberFieldProps {
 }
 
 const VERTEX_SHADER = `
+  attribute vec2 position;
   varying vec2 vUv;
   void main() {
-    vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vUv = position * 0.5 + 0.5;
+    gl_Position = vec4(position, 0.0, 1.0);
   }
 `;
 
@@ -124,19 +125,20 @@ const FRAGMENT_SHADER = `
   }
 `;
 
-export default function AmberField({ intensity = 'hero', className = '' }: AmberFieldProps) {
+export function AmberField({ intensity = 'hero', className = '' }: AmberFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [webglSupported, setWebglSupported] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  });
 
   const intensityMap = { hero: 1.0, subtle: 0.45, empty: 0.3 };
   const currentIntensity = intensityMap[intensity];
 
   useEffect(() => {
-    // Check prefers-reduced-motion
+    // Subscribe to prefers-reduced-motion changes
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mediaQuery.matches);
-
     const handleChange = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
@@ -212,7 +214,6 @@ export default function AmberField({ intensity = 'hero', className = '' }: Amber
 
     let animationId: number;
     let lastTime = 0;
-    let frameCount = 0;
     const targetFps = 30;
     const frameInterval = 1000 / targetFps;
 
@@ -294,3 +295,5 @@ export default function AmberField({ intensity = 'hero', className = '' }: Amber
     />
   );
 }
+
+export default AmberField;

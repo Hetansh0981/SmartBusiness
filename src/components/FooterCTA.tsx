@@ -4,10 +4,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
-import { ArrowRight, ShieldCheck, Heart } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-const Motion = dynamic(() => import('framer-motion').then(m => m.motion), { ssr: false });
+import { ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function FooterCTA() {
   const { t } = useLanguage();
@@ -16,7 +14,7 @@ export default function FooterCTA() {
   return (
     <footer className="relative border-t border-hairline bg-canvas">
       {/* 1. Large Direct Invitation Banner with 3D Depth & Sheen */}
-      <Motion
+      <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-100px' }}
@@ -84,7 +82,7 @@ export default function FooterCTA() {
             </Link>
           </div>
         </div>
-      </Motion>
+      </motion.div>
     </footer>
   );
 }

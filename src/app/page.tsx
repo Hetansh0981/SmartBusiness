@@ -1,14 +1,11 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useScroll, useVisibility } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, ShieldCheck, ShoppingBag, Store, Zap, MessageCircle, Percent, Check, Layers, Box, Flame, Wand2 } from 'lucide-react';
+import { ArrowRight, Sparkles, ShieldCheck, ShoppingBag, MessageCircle, Percent, Check, CheckCircle2, Layers, Box, Flame, Wand2 } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
-import LanguageToggle from '@/components/LanguageToggle';
 import Navbar from '@/components/Navbar';
-import { AmberField } from '@/components/atmosphere/AmberField';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { formatINR } from '@/lib/utils';
+import AmberField from '@/components/atmosphere/AmberField';
 
 // Import components (they won't use dynamic imports now)
 import ProfitLedger from '@/components/ProfitLedger';
@@ -115,7 +112,7 @@ const PERSONAS: MerchantPersona[] = [
     commissionSaved: '₹41,250 / month saved vs food aggregators',
     monthlyRevenue: 165000,
   },
-};
+];
 
 type AnimationPreset = '3d-pop' | 'festive-shimmer' | 'gentle-glide' | 'dynamic-float';
 
@@ -205,124 +202,39 @@ const PILLARS = [
   },
 ];
 
-// Helper to check if element is in viewport
-function useIsInView(ref: React.RefObject<HTMLElement>, options = { once: true, margin: '-100px' }) {
-  const [visible, setVisible] = React.useState(false);
-  React.useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisible(true);
-          }
-        });
-      },
-      { ...options, threshold: 0.1 }
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [ref, options]);
-
-  return visible;
-}
-
 export default function HomePage() {
   const { t } = useLanguage();
-  const [selectedId, setSelectedId] = useState<string>('fashion');
-  const [orderSent, setOrderSent] = useState(false);
-  const [orderCount, setOrderCount] = useState(1);
-  const [animPreset, setAnimPreset] = useState<AnimationPreset>('3d-pop');
-  const [is3DStage, setIs3DStage] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  // 3D Mouse Tilt Tracking
-  const terminalRef = useRef<HTMLDivElement>(null);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (is3DStage) return;
-    const card = terminalRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = ((y - centerY) / centerY) * -4;
-    const rotateY = ((x - centerX) / centerX) * 4;
-    setTilt({ x: rotateX, y: rotateY });
-  };
-
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0 });
-  };
-
-  const active = PERSONAS.find((p) => p.id === selectedId) || PERSONAS[0];
-
-  const getPersonaBadge = (id: string) => t(`landing.persona_${id}_badge`, PERSONAS.find(p => p.id === id)?.badge || '');
-  const getPersonaName = (id: string) => t(`landing.persona_${id}_name`, PERSONAS.find(p => p.id === id)?.shopName || '');
-  const getPersonaCategory = (id: string) => t(`landing.persona_${id}_category`, PERSONAS.find(p => p.id === id)?.category || '');
-  const getPersonaCity = (id: string) => t(`landing.persona_${id}_city`, PERSONAS.find(p => p.id === id)?.city || '');
-  const getPersonaProduct = (id: string) => t(`landing.persona_${id}_product`, PERSONAS.find(p => p.id === id)?.featuredProduct.name || '');
-  const getPersonaTag = (id: string) => t(`landing.persona_${id}_tag`, PERSONAS.find(p => p.id === id)?.featuredProduct.tag || '');
-  const getPersonaSaved = (id: string) => t(`landing.persona_${id}_saved`, PERSONAS.find(p => p.id === id)?.commissionSaved || '');
-
-  const getPresetLabel = (id: AnimationPreset) => {
-    switch (id) {
-      case '3d-pop': return t('landing.terminal_preset_3d');
-      case 'festive-shimmer': return t('landing.terminal_preset_shimmer');
-      case 'gentle-glide': return t('landing.terminal_preset_glide');
-      case 'dynamic-float': return t('landing.terminal_preset_float');
-    }
-  };
-
-  const handleTestOrder = () => {
-    setOrderSent(true);
-    setOrderCount((prev) => prev + 1);
-    setTimeout(() => setOrderSent(false), 4500);
-  };
-
-  const getPresetCardClass = () => {
-    switch (animPreset) {
-      case '3d-pop': return 'anim-3d-pop card-3d-hover';
-      case 'festive-shimmer': return 'anim-festive-shimmer sheen-glow';
-      case 'gentle-glide': return 'anim-gentle-glide';
-      case 'dynamic-float': return 'anim-dynamic-float';
-      default: return 'card-3d-hover';
-    }
-  };
 
   // Scroll-triggered animations using CSS + IntersectionObserver
-  const pillarsRef = React.useRef<any>(null);
-  const headerRef = React.useRef<any>(null);
-  const featuresRef = React.useRef<any>(null);
+  const pillarsRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const terminalRef = useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
-    // Header reveal on scroll
+  useEffect(() => {
+    const headerEl = headerRef.current;
+    const pillarsEl = pillarsRef.current;
+
     const headerObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Add visible class via CSS already handles it
+            entry.target.classList.add('is-visible');
           }
         });
       },
       { threshold: 0.1, rootMargin: '-100px' }
     );
 
-    if (headerRef.current) headerObserver.observe(headerRef.current);
+    if (headerEl) headerObserver.observe(headerEl);
 
-    // Features pillars reveal
-    if (pillarsRef.current) {
-      const pillarsObserver = new IntersectionObserver(
+    let pillarsObserver: IntersectionObserver | null = null;
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
+
+    if (pillarsEl) {
+      pillarsObserver = new IntersectionObserver(
         (entries) => {
-          entries.forEach((entry, idx) => {
+          entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              // Add stagger class via CSS selector
               entry.target.classList.add('is-visible');
             }
           });
@@ -330,15 +242,16 @@ export default function HomePage() {
         { threshold: 0.1 }
       );
 
-      // Observe each pillar card
-      pillarsRef.current.querySelectorAll('.rounded-2xl').forEach((el, i) => {
-        setTimeout(() => pillarsObserver.observe(el), i * 100);
+      pillarsEl.querySelectorAll('.rounded-2xl').forEach((el, i) => {
+        const timeoutId = setTimeout(() => pillarsObserver?.observe(el), i * 100);
+        timeouts.push(timeoutId);
       });
     }
 
     return () => {
-      if (headerRef.current) headerObserver.disconnect();
-      if (pillarsRef.current) pillarsObserver.disconnect();
+      timeouts.forEach(clearTimeout);
+      headerObserver.disconnect();
+      pillarsObserver?.disconnect();
     };
   }, []);
 
@@ -359,7 +272,6 @@ export default function HomePage() {
 
           {/* Trust Notice with Floating Animation */}
           <div
-            ref={headerRef}
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-raised border border-hairline mb-8 text-xs text-ash animate-float-slow hover:border-accent/40 transition-colors"
           >
             <span className="w-2 h-2 rounded-full bg-success animate-pulse" />

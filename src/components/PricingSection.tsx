@@ -4,9 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { Check, ArrowRight } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-const Motion = dynamic(() => import('framer-motion').then(m => m.motion), { ssr: false });
+import { motion } from 'framer-motion';
 
 export default function PricingSection() {
   const { t } = useLanguage();
@@ -59,7 +57,7 @@ export default function PricingSection() {
 
         {/* Section Heading */}
         <div className="max-w-2xl mb-12 text-center">
-          <Motion
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
@@ -67,9 +65,9 @@ export default function PricingSection() {
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-raised border border-hairline text-accent text-xs font-semibold mb-6"
           >
             <span>{t('landing.pricing_badge')}</span>
-          </Motion>
+          </motion.div>
 
-          <Motion
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
@@ -77,9 +75,9 @@ export default function PricingSection() {
             className="text-3xl sm:text-5xl font-display text-ink tracking-normal leading-tight text-balance"
           >
             <h2>{t('landing.pricing_title')}</h2>
-          </Motion>
+          </motion.div>
 
-          <Motion
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
@@ -87,13 +85,13 @@ export default function PricingSection() {
             className="mt-6 text-base text-ash leading-relaxed font-body text-center max-w-2xl mx-auto text-balance"
           >
             <p>{t('landing.pricing_subtitle')}</p>
-          </Motion>
+          </motion.div>
         </div>
 
         {/* 2-Tier Pricing Comparison with 3D Depth */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-stretch perspective-1000">
           {plans.map((plan, idx) => (
-            <Motion
+            <motion.div
               key={plan.id}
               initial={{ opacity: 0, y: 30, scale: 0.98 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -161,7 +159,7 @@ export default function PricingSection() {
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                 </button>
               </Link>
-            </Motion>
+            </motion.div>
           ))}
         </div>
       </div>

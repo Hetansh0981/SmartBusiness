@@ -55,7 +55,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-canvas text-ink selection:bg-accent/30 selection:text-cream">
         <LanguageProvider scope="merchant">
-          <ToastProvider>{children}</ToastProvider>
+          {children}
         </LanguageProvider>
       </body>
     </html>

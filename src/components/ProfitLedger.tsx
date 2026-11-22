@@ -4,10 +4,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { formatINR } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
-import { ArrowRight, Check, X, ShieldCheck } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-const Motion = dynamic(() => import('framer-motion').then(m => m.motion), { ssr: false });
+import { ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function ProfitLedger() {
   const { t } = useLanguage();
@@ -26,7 +24,7 @@ export default function ProfitLedger() {
 
         {/* Section Heading */}
         <div className="max-w-2xl mb-12 text-center">
-          <Motion
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
@@ -34,9 +32,9 @@ export default function ProfitLedger() {
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-raised border border-hairline text-accent text-xs font-semibold mb-6"
           >
             <span>{t('landing.calc_badge')}</span>
-          </Motion>
+          </motion.div>
 
-          <Motion
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
@@ -44,9 +42,9 @@ export default function ProfitLedger() {
             className="text-3xl sm:text-5xl font-display text-ink tracking-normal leading-tight text-balance"
           >
             <h2>{t('landing.calc_title')}</h2>
-          </Motion>
+          </motion.div>
 
-          <Motion
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
@@ -54,11 +52,11 @@ export default function ProfitLedger() {
             className="mt-6 text-base text-ash leading-relaxed font-body text-center max-w-2xl mx-auto text-balance"
           >
             <p>{t('landing.calc_subtitle')}</p>
-          </Motion>
+          </motion.div>
         </div>
 
         {/* Interactive Calculator Ledger Card */}
-        <Motion
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
@@ -98,7 +96,7 @@ export default function ProfitLedger() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-8 perspective-800">
 
             {/* Column A: Traditional Delivery Aggregators */}
-            <Motion
+            <motion.div
               initial={{ opacity: 0, y: 20, rotateX: -10 }}
               animate={{ opacity: 1, y: 0, rotateX: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -134,10 +132,10 @@ export default function ProfitLedger() {
                   {formatINR(merchantRetainedAggregator)}
                 </span>
               </div>
-            </Motion>
+            </motion.div>
 
             {/* Column B: DukaanOS Commerce */}
-            <Motion
+            <motion.div
               initial={{ opacity: 0, y: 20, rotateX: -10 }}
               animate={{ opacity: 1, y: 0, rotateX: 0 }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
@@ -173,11 +171,11 @@ export default function ProfitLedger() {
                   {formatINR(merchantRetainedDukaanOS)}
                 </span>
               </div>
-            </Motion>
+            </motion.div>
           </div>
 
           {/* Net Savings Callout */}
-          <Motion
+          <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
@@ -199,8 +197,8 @@ export default function ProfitLedger() {
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
               </button>
             </Link>
-          </Motion>
-        </Motion>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

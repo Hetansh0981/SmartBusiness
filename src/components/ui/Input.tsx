@@ -161,9 +161,9 @@ export function Field({ label, helperText, error, required, children }: FieldPro
       )}
       <div id={fieldId}>
         {React.Children.map(children, (child) =>
-          React.isValidElement(child)
+          React.isValidElement<Record<string, unknown>>(child)
             ? React.cloneElement(child, {
-                id: child.props.id || fieldId,
+                id: (child.props.id as string | undefined) || fieldId,
                 'aria-describedby': [
                   helperText ? `${fieldId}-helper` : '',
                   error ? `${fieldId}-error` : '',

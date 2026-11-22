@@ -1,23 +1,15 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import {
-  Zap,
   ShoppingBag,
   Percent,
   Sparkles,
-  Smartphone,
-  ShieldCheck,
   Check,
-  ArrowRight,
-  Truck,
   MessageCircle,
 } from 'lucide-react';
-import dynamic from 'next/dynamic';
-
-const Motion = dynamic(() => import('framer-motion').then(m => m.motion), { ssr: false });
+import { motion } from 'framer-motion';
 
 const PILLARS = [
   {
@@ -107,7 +99,7 @@ export default function MarketEngine() {
 
         {/* Section Header (Claude-inspired typography) */}
         <div className="max-w-3xl mb-16 text-center">
-          <Motion
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
@@ -116,9 +108,9 @@ export default function MarketEngine() {
           >
             <Sparkles className="w-3.5 h-3.5 text-accent" aria-hidden="true" />
             <span>{t('landing.engine_badge')}</span>
-          </Motion>
+          </motion.div>
 
-          <Motion
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
@@ -126,9 +118,9 @@ export default function MarketEngine() {
             className="text-3xl sm:text-5xl font-display text-ink tracking-normal leading-tight text-balance"
           >
             <h2>{t('landing.engine_title')}</h2>
-          </Motion>
+          </motion.div>
 
-          <Motion
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
@@ -136,13 +128,13 @@ export default function MarketEngine() {
             className="mt-6 text-base text-ash leading-relaxed font-body text-center max-w-2xl mx-auto text-balance"
           >
             <p>{t('landing.engine_subtitle')}</p>
-          </Motion>
+          </motion.div>
         </div>
 
         {/* 2x2 Distinctive Capability Grid with 3D Elevation & Sheen */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 perspective-1000">
           {PILLARS.map((pillar, idx) => (
-            <Motion
+            <motion.div
               key={pillar.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -195,7 +187,7 @@ export default function MarketEngine() {
                   {pillar.previewSnippet.status}
                 </span>
               </div>
-            </Motion>
+            </motion.div>
           ))}
         </div>
       </div>
